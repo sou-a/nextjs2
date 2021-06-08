@@ -1,8 +1,12 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import Head from "next/head";
+import Image from "next/image";
+import styles from "../styles/Home.module.css";
+import { useFetchData } from "../components/fetch-component";
+import { GetServerSideProps } from "next";
 
-export default function Home() {
+export default function Home({ build_time }) {
+  const { data } = useFetchData();
+
   return (
     <div className={styles.container}>
       <Head>
@@ -16,8 +20,14 @@ export default function Home() {
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
 
+        <div>
+          <p>ここにReactのGitHubレポジトリに付いたスターの数を表示してみよう</p>
+          <p>{data.stars} stars</p>
+          <p>ビルド時間: {build_time}</p>
+        </div>
+
         <p className={styles.description}>
-          Get started by editing{' '}
+          Get started by editing{" "}
           <code className={styles.code}>pages/index.js</code>
         </p>
 
@@ -58,12 +68,20 @@ export default function Home() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{' '}
+          Powered by{" "}
           <span className={styles.logo}>
             <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
           </span>
         </a>
       </footer>
     </div>
-  )
+  );
+}
+
+export async function getServerSideProps() {
+  // ビルド時刻の取得
+  const build_time = new Date().toString();
+  return {
+    props: { build_time },
+  };
 }
